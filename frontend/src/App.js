@@ -36,7 +36,7 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
-        <Router basename="/code-docs">
+        <Router basename="/">
           <NavBar />
           <Routes>
             <Route path="/login" element={<LoginPage />} />
