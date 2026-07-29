@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: code-docs-backend
+    restart: unless-stopped
+    ports:
+      - 172.17.0.1:3001:3000
+    environment:
+      - TZ=Europe/Moscow
+    env_file:
+      - ./app/.env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
