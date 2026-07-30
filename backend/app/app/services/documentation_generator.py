@@ -18,7 +18,7 @@ def generate_html_documentation(db_project: Project, entities: List[Type[CodeEnt
 
     files_html = ""
     for file_id, (file, file_entities) in files_dict.items():
-        file_src = f"/code-docs/projects/{db_project.id}/files/{file.id}"
+        file_src = f"/projects/{db_project.id}/files/{file.id}"
 
         tree = build_entity_tree(file_entities)
 
