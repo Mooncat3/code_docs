@@ -14,12 +14,13 @@
 ## Стек
 
 ### Бэкенд
-- Python 3.10+
+- Python 3.12 (образ `python:3.12-slim`)
 - [FastAPI](https://fastapi.tiangolo.com/) — REST API
 - SQLAlchemy 2 — ORM и работа с БД
 - PyJWT + bcrypt + passlib — аутентификация и хеширование паролей
 - python-dotenv — загрузка секретов из `.env`
 - uvicorn — ASGI-сервер
+- Docker + Docker Compose — контейнеризация и запуск
 
 ### Фронтенд
 - React 19
@@ -33,13 +34,14 @@
 ```
 code_docs/
 ├── backend/
-│   ├── main.py                  # Точка входа (uvicorn)
-│   ├── requirements.txt
-│   ├── .env.example
+│   ├── Dockerfile
+│   ├── docker-compose.yml
 │   └── app/
 │       ├── main.py              # FastAPI-приложение, подключение роутеров
 │       ├── config.py            # Настройки из .env
 │       ├── database.py          # Подключение к БД, Base, engine
+│       ├── requirements.txt
+│       ├── .env.example
 │       ├── models/              # SQLAlchemy-модели
 │       ├── schemas/             # Pydantic-схемы
 │       ├── routers/             # Эндпоинты: auth, users, projects, files, docs
@@ -59,22 +61,33 @@ code_docs/
 
 ### Бэкенд
 
+Бэкенд запускается через Docker Compose. Образ собирается локально из `Dockerfile`.
+
 1. Скопируйте `.env.example` в `.env` и заполните значения:
 
 ```bash
 cd backend
-cp .env.example .env
+cp app/.env.example app/.env
 ```
 
-2. Установите зависимости и запустите сервер:
+2. Соберите и запустите контейнер:
 
 ```bash
-pip install -r requirements.txt
-python main.py
+docker compose up -d --build
 ```
 
-API будет доступен по адресу `http://localhost:8000/code-docs/api`.
-Автодокументация: `http://localhost:8000/docs`.
+Контейнер `code-docs-backend` запустится и будет автоматически перезапускаться (`restart: unless-stopped`).
+
+API будет доступен по адресу `http://localhost:3001/code-docs/api`.  
+Автодокументация: `http://localhost:3001/docs`.
+
+> Порт `3001` на хосте проброшен на порт `3000` внутри контейнера.
+
+#### Остановка
+
+```bash
+docker compose down
+```
 
 ### Фронтенд
 
@@ -88,7 +101,7 @@ npm start
 
 ## Переменные окружения
 
-См. файл `backend/.env.example`.
+См. файл `backend/app/.env.example`. Переменные передаются в контейнер через `env_file` в `docker-compose.yml`.
 
 | Переменная | Описание | Значение по умолчанию |
 |---|---|---|
